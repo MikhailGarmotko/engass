@@ -1,31 +1,37 @@
+version: '3.0'
+
 services:
-  api:
-    depends_on:
-      - postgres
+  main:
+    container_name: main
     build:
-      dockerfile: Dockerfile
       context: .
-      # Only will build development stage from our dockerfile
+    env_file:
+      - .env
     volumes:
       - .:/app
-    env_file:
-    - .env
-    # Run a command against the development stage of the image
+      - /app/node_modules
+    ports:
+      - 3000:3000
+      - 9229:9229
     command: npm run start:dev
-    ports:
-      - '3000:3000'
-  postgres:
-    image: postgres
+    depends_on:
+      - postgres
     restart: always
-    environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=admin
-        - POSTGRES_DB=english_assistant
+  postgres:
+    container_name: postgres
+    image: postgres:12
     env_file:
-    - .env
+      - .env
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - '5432:5432'
+      - 5432:5432
     volumes:
-      - docker-nest-postgres:/var/lib/postgresql/data
+      - english_assistant:/var/lib/postgresql/data
+    restart: always
+
 volumes:
-  docker-nest-postgres:
+  english_assistant:

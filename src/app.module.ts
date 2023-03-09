@@ -13,7 +13,7 @@ import { Word } from './wordlist/words.entity';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'build'),
+      rootPath: join(__dirname,'..', 'build'),
     }),
     ConfigModule.forRoot({
     isGlobal:true}),
@@ -27,7 +27,7 @@ import { Word } from './wordlist/words.entity';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
       }),
       inject:[ConfigService],
     }), 
